@@ -16,6 +16,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    private int test1 = 0;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
