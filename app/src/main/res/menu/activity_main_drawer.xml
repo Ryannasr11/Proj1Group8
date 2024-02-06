@@ -8,21 +8,6 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_USOne"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/USOne" />
-        <item
-            android:id="@+id/nav_USTwo"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/USTwo" />
-        <item
-            android:id="@+id/nav_USThree"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/USThree" />
-        <item
-            android:id="@+id/nav_USFour"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/USFour" />
+
     </group>
 </menu>

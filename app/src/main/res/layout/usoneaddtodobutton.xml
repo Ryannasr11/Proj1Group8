@@ -4,6 +4,19 @@
     android:layout_height="wrap_content"
     android:fillViewport="true">
 
+    <LinearLayout
+        android:id="@+id/linearLayoutMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/editTextListNameTodo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="List Name" />
+
         <!-- This LinearLayout will contain the dynamic To-Do item views -->
         <LinearLayout
             android:id="@+id/linearLayoutToDoItems"
@@ -34,5 +47,6 @@
 
         <!-- Add Item button -->
 
-
+    </LinearLayout>
 </ScrollView>
+
