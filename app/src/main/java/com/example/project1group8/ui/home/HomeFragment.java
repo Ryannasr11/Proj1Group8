@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment {
 
         for (Exams exam : exams) {
             if (exam.getDayOfWeekExam().equalsIgnoreCase(dayOfWeekSelected)) {
-                activitiesForDay.add("Exam: " + exam.getNameExam() + " for " + exam.getClassExam() + " at " + exam.getTimeExam());
+                activitiesForDay.add("Exam: " + exam.getNameExam() + " in " + exam.getClassExam() + " at " + exam.getTimeExam());
             }
         }
 
