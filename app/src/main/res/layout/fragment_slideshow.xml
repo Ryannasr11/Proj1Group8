@@ -4,19 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ui.US1.USOneFragment">
 
-    <TextView
-        android:id="@+id/text_slideshow"
+    <CalendarView
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/classesTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Classes"
+        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        app:layout_constraintBottom_toTopOf="@id/add_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+    <!-- Start Button -->
+<Button
+android:id="@+id/add_button"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:text="Add"
+    app:layout_constraintTop_toBottomOf="@id/classesTextView"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintBottom_toTopOf="@id/edit_button"
+app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- Edit Button -->
+<Button
+android:id="@+id/edit_button"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:text="Edit"
+app:layout_constraintTop_toBottomOf="@id/add_button"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintBottom_toTopOf="@id/delete_button" />
+
+    <!-- Delete Button -->
+<Button
+android:id="@+id/delete_button"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:text="Delete"
+app:layout_constraintTop_toBottomOf="@id/edit_button"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
