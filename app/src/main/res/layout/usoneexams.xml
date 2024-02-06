@@ -30,5 +30,5 @@
         android:id="@+id/editTextCourseNameExams"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Course Name" />
+        android:hint="Exam location" />
 </LinearLayout>
