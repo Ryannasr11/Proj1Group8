@@ -834,7 +834,7 @@ public class HomeFragment extends Fragment {
         builder.setTitle("Choose a to do list to delete")
                 .setItems(examNames, (dialog, which) -> {
                     toDoItem.remove(which);
-                    Toast.makeText(getContext(), "Exam deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "To do list deleted", Toast.LENGTH_SHORT).show();
                 });
 
         AlertDialog selectionDialog = builder.create();
