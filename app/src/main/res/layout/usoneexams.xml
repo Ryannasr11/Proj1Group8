@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextAssignmentNameExams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Exam name" />
+
+    <Spinner
+        android:id="@+id/spinnerDayOfWeekExams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/days_of_week" />
+
+    <EditText
+        android:id="@+id/editTextTimeExams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:hint="Select Time"
+        android:inputType="none"/>
+
+
+    <EditText
+        android:id="@+id/editTextCourseNameExams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Course Name" />
+</LinearLayout>

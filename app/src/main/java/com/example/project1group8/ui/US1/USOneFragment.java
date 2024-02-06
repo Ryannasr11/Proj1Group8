@@ -47,8 +47,17 @@ public class USOneFragment extends Fragment {
     private Button editButton;
     private Button deleteButton;
 
+
+    // Private variables above
+
+    // ------------------------------------------------------ //
+
+    // Initial setup below; DO NOT EDIT BELOW!!!
+
     // A list to store the course information at runtime
     private final List<Course> courses = new ArrayList<Course>();
+    private final List<Assignments> assignments = new ArrayList<Assignments>();
+    private final List<Exams> exams = new ArrayList<Exams>();
 
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,15 +79,15 @@ public class USOneFragment extends Fragment {
 
             // Set onClickListener for Add button
             addButton.setOnClickListener(v -> {
-                addCourse();
+                viewOptionsAdd();
             });
 
             editButton.setOnClickListener(v -> {
-               editCourse();
+               viewOptionsEdit();
             });
 
             deleteButton.setOnClickListener(v -> {
-               deleteCourse();
+               viewOptionsDelete();
             });
 
             CalendarView calendarView = binding.calendarView;
@@ -100,8 +109,14 @@ public class USOneFragment extends Fragment {
             return root;
         }
 
+    // Initial setup above; DO NOT EDIT ABOVE!!!
+
+    // ------------------------------------------------------ //
+
+    // Calendar functionality below
+
     private List<String> getClassesForDay(int year, int month, int dayOfMonth) {
-        List<String> classesForDay = new ArrayList<>();
+        List<String> activitiesForDay = new ArrayList<>();
 
         // Create a Calendar object for the selected date
         Calendar calendar = Calendar.getInstance();
@@ -113,12 +128,134 @@ public class USOneFragment extends Fragment {
         // Filter courses based on this day of the week
         for (Course course : courses) {
             if (course.getDayOfWeek().equalsIgnoreCase(dayOfWeekSelected)) {
-                classesForDay.add(course.getName() + " at " + course.getTime());
+                activitiesForDay.add("Course: " + course.getName() + " at " + course.getTime());
             }
         }
 
-        return classesForDay;
+        // Filter assignments based on this day of the week
+        for (Assignments assignment : assignments) {
+            if (assignment.getDayOfWeekAss().equalsIgnoreCase(dayOfWeekSelected)) {
+                activitiesForDay.add("Assignment: " + assignment.getNameAss() + " for " + assignment.getCourseNameAss() + " at " + assignment.getTimeAss());
+            }
+        }
+
+        for (Exams exam : exams) {
+            if (exam.getDayOfWeekExam().equalsIgnoreCase(dayOfWeekSelected)) {
+                activitiesForDay.add("Exam: " + exam.getNameExam() + " for " + exam.getClassExam() + " at " + exam.getTimeExam());
+            }
+        }
+
+        return activitiesForDay;
     }
+
+
+    // Calendar functionality above
+
+    // ------------------------------------------------------ //
+
+    // View options below
+
+    private void viewOptionsAdd() {
+
+        // Prepare an array of course names for the selection dialog
+        String[] choiceNames = {"Courses", "Assignments", "Exams", "To-Do Lists"};
+
+        // Create and show a selection dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an option")
+                .setItems(choiceNames, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // "Courses" was selected
+                            addCourse();
+                            break;
+                        case 1: // "Assignments" was selected
+                            addAssignment();
+                            break;
+                        case 2: // "Exams" was selected
+                            addExam();
+                            break;
+                        case 3: // "To-Do Lists" was selected
+                            break;
+                        default:
+                            // Handle unexpected value (if necessary)
+                            break;
+                    }
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+    private void viewOptionsEdit() {
+
+        // Prepare an array of course names for the selection dialog
+        String[] choiceNames = {"Courses", "Assignments", "Exams", "To-Do Lists"};
+
+        // Create and show a selection dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an option")
+                .setItems(choiceNames, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // "Courses" was selected
+                            editCourse();
+                            break;
+                        case 1: // "Assignments" was selected
+                            editAssignment();
+                            break;
+                        case 2: // "Exams" was selected
+                            editExam();
+                            break;
+                        case 3: // "To-Do Lists" was selected
+                            break;
+                        default:
+                            // Handle unexpected value (if necessary)
+                            break;
+                    }
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+    private void viewOptionsDelete() {
+
+        // Prepare an array of course names for the selection dialog
+        String[] choiceNames = {"Courses", "Assignments", "Exams", "To-Do Lists"};
+
+        // Create and show a selection dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an option")
+                .setItems(choiceNames, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // "Courses" was selected
+                            deleteCourse();
+                            break;
+                        case 1: // "Assignments" was selected
+                            deleteAssignment();
+                            break;
+                        case 2: // "Exams" was selected
+                            deleteExam();
+                            break;
+                        case 3: // "To-Do Lists" was selected
+                            break;
+                        default:
+                            // Handle unexpected value (if necessary)
+                            break;
+                    }
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+
+
+
+    // View options above
+
+    // ------------------------------------------------------ //
+
+    // Buttons below
 
 
     private void addCourse() {
@@ -276,39 +413,451 @@ public class USOneFragment extends Fragment {
     }
 
 
+    // Course buttons above
 
-    @Override
-        public void onDestroyView() {
+    // ------------------------------------------------------ //
+
+    // Assignment buttons below
+
+    private void addAssignment() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.usoneass, null);
+
+        final EditText editTextAssignmentName = dialogView.findViewById(R.id.editTextAssignmentNameAss);
+        final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekAss);
+        final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeAss);
+        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss); // Now represents course name
+
+        editTextTime.setOnClickListener(v -> {
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+
+            TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                editTextTime.setText(time);
+            }, hour, minute, true);
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        });
+
+        builder.setView(dialogView)
+                .setTitle("Add Assignment")
+                .setPositiveButton("Submit", (dialog, id) -> {
+                    String assignmentName = editTextAssignmentName.getText().toString();
+                    String courseName = editTextCourseName.getText().toString();
+                    String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
+                    String time = editTextTime.getText().toString();
+
+                    assignments.add(new Assignments(assignmentName, dayOfWeek, time, courseName));
+                    Toast.makeText(getContext(), "Assignment added", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void editAssignment() {
+        if (assignments.isEmpty()) {
+            Toast.makeText(getContext(), "No assignments to edit", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Prepare an array of assignment names for the selection dialog
+        final String[] assignmentNames = new String[assignments.size()];
+        for (int i = 0; i < assignments.size(); i++) {
+            assignmentNames[i] = assignments.get(i).getNameAss();
+        }
+
+        // Create and show a selection dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an assignment to edit")
+                .setItems(assignmentNames, (dialog, which) -> {
+                    // 'which' is the index of the selected item
+                    showEditDialogAss(assignments.get(which));
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+    private void showEditDialogAss(final Assignments assignmentToEdit) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.usoneass, null);
+
+        final EditText editTextAssignmentName = dialogView.findViewById(R.id.editTextAssignmentNameAss);
+        final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekAss);
+        final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeAss);
+        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss); // Used for course name in assignments
+
+        editTextTime.setOnClickListener(v -> {
+            // Initialize a new instance of TimePickerDialog
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+
+            TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                editTextTime.setText(time);
+            }, hour, minute, true); // True for 24-hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        });
+
+        // Pre-fill dialog with assignment data
+        editTextAssignmentName.setText(assignmentToEdit.getNameAss());
+        editTextTime.setText(assignmentToEdit.getTimeAss());
+        editTextCourseName.setText(assignmentToEdit.getCourseNameAss());
+
+        builder.setView(dialogView)
+                .setTitle("Edit Assignment")
+                .setPositiveButton("Submit", (dialog, id) -> {
+                    // Collecting updated information from the dialog
+                    String assignmentName = editTextAssignmentName.getText().toString();
+                    String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
+                    String time = editTextTime.getText().toString();
+                    String courseName = editTextCourseName.getText().toString();
+
+                    // Updating the properties of assignmentToEdit
+                    assignmentToEdit.setNameAss(assignmentName);
+                    assignmentToEdit.setDayOfWeekAss(dayOfWeek);
+                    assignmentToEdit.setTimeAss(time);
+                    assignmentToEdit.setCourseNameAss(courseName);
+
+                    Toast.makeText(getContext(), "Assignment updated", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void deleteAssignment() {
+        if (assignments.isEmpty()) {
+            Toast.makeText(getContext(), "No assignments to delete", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String[] assignmentNames = new String[assignments.size()];
+        for (int i = 0; i < assignments.size(); i++) {
+            assignmentNames[i] = assignments.get(i).getNameAss();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an assignment to delete")
+                .setItems(assignmentNames, (dialog, which) -> {
+                    assignments.remove(which);
+                    Toast.makeText(getContext(), "Assignment deleted", Toast.LENGTH_SHORT).show();
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+
+    // Assignment buttons above
+
+    // ------------------------------------------------------ //
+
+    // Exam buttons below
+
+
+
+    private void addExam() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.usoneexams, null);
+
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams); // Update ID for exam
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams); // Update ID for exam if necessary
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams); // Update ID for exam if necessary
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams); // Update ID for exam if necessary
+
+        editTextTimeExam.setOnClickListener(v -> {
+            // Initialize a new instance of TimePickerDialog
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                editTextTimeExam.setText(time);
+            }, hour, minute, true); // True for 24-hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        });
+
+        builder.setView(dialogView)
+                .setTitle("Add Exam")
+                .setPositiveButton("Submit", (dialog, id) -> {
+                    String nameExam = editTextNameExam.getText().toString();
+                    String classExam = editTextClassExam.getText().toString();
+                    String dayOfWeekExam = spinnerDayOfWeekExam.getSelectedItem().toString();
+                    String timeExam = editTextTimeExam.getText().toString();
+
+                    // Add exam information to the list
+                    exams.add(new Exams(nameExam, dayOfWeekExam, timeExam, classExam));
+                    Toast.makeText(getContext(), "Exam added", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void editExam() {
+        if (exams.isEmpty()) {
+            Toast.makeText(getContext(), "No exams to edit", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Prepare an array of exam names for the selection dialog
+        final String[] examNames = new String[exams.size()];
+        for (int i = 0; i < exams.size(); i++) {
+            examNames[i] = exams.get(i).getNameExam();
+        }
+
+        // Create and show a selection dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an exam to edit")
+                .setItems(examNames, (dialog, which) -> {
+                    // 'which' is the index of the selected item
+                    showEditDialogExam(exams.get(which));
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+    private void showEditDialogExam(final Exams examToEdit) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.usoneexams, null); // Make sure this layout has the appropriate IDs for exams
+
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams); // Update ID for exam
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams); // Update ID for exam if necessary
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams); // Update ID for exam if necessary
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams); // Update ID for exam if necessary
+
+        editTextTimeExam.setOnClickListener(v -> {
+            // Initialize a new instance of TimePickerDialog
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+
+            TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                editTextTimeExam.setText(time);
+            }, hour, minute, true); // True for 24-hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        });
+
+        // Pre-fill dialog with exam data
+        editTextNameExam.setText(examToEdit.getNameExam());
+        editTextTimeExam.setText(examToEdit.getTimeExam());
+        editTextClassExam.setText(examToEdit.getClassExam());
+
+        // Assuming your spinnerDayOfWeekExam is properly initialized elsewhere with day names
+        // You may need to set the spinner to show the correct day of the week
+
+        builder.setView(dialogView)
+                .setTitle("Edit Exam")
+                .setPositiveButton("Submit", (dialog, id) -> {
+                    // Collecting updated information from the dialog
+                    String nameExam = editTextNameExam.getText().toString();
+                    String dayOfWeekExam = spinnerDayOfWeekExam.getSelectedItem().toString();
+                    String timeExam = editTextTimeExam.getText().toString();
+                    String classExam = editTextClassExam.getText().toString();
+
+                    // Updating the properties of examToEdit
+                    examToEdit.setNameExam(nameExam);
+                    examToEdit.setDayOfWeekExam(dayOfWeekExam);
+                    examToEdit.setTimeExam(timeExam);
+                    examToEdit.setClassExam(classExam);
+
+                    Toast.makeText(getContext(), "Exam updated", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteExam() {
+        if (exams.isEmpty()) {
+            Toast.makeText(getContext(), "No exams to delete", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String[] examNames = new String[exams.size()];
+        for (int i = 0; i < exams.size(); i++) {
+            examNames[i] = exams.get(i).getNameExam();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose an exam to delete")
+                .setItems(examNames, (dialog, which) -> {
+                    exams.remove(which);
+                    Toast.makeText(getContext(), "Exam deleted", Toast.LENGTH_SHORT).show();
+                });
+
+        AlertDialog selectionDialog = builder.create();
+        selectionDialog.show();
+    }
+
+
+
+
+    // All Buttons above
+
+        // ------------------------------------------------------ //
+
+        // Classes and such below
+
+
+        @Override
+        public void onDestroyView () {
             super.onDestroyView();
             binding = null;
         }
 
-    private class Course {
-        private String name;
-        private String dayOfWeek; // To store the day of the week
-        private String time; // To store the time
-        private String instructor;
+        private class Course {
+            private String name;
+            private String dayOfWeek; // To store the day of the week
+            private String time; // To store the time
+            private String instructor;
+
+            // Updated constructor to include dayOfWeek and time
+            public Course(String name, String dayOfWeek, String time, String instructor) {
+                this.name = name;
+                this.dayOfWeek = dayOfWeek;
+                this.time = time;
+                this.instructor = instructor;
+            }
+
+            // Getters and setters
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            // Updated to accommodate dayOfWeek and time
+            public void setDayOfWeek(String dayOfWeek) {
+                this.dayOfWeek = dayOfWeek;
+            }
+
+            public void setTime(String time) {
+                this.time = time;
+            }
+
+            public void setInstructor(String instructor) {
+                this.instructor = instructor;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            // Getter for dayOfWeek
+            public String getDayOfWeek() {
+                return dayOfWeek;
+            }
+
+            // Getter for time
+            public String getTime() {
+                return time;
+            }
+
+            public String getInstructor() {
+                return instructor;
+            }
+        }
+
+
+        private class Assignments {
+            private String nameAss;
+            private String dayOfWeekAss; // To store the day of the week
+            private String timeAss; // To store the time
+            private String courseNameAss;
+
+            // Updated constructor to include dayOfWeek and time
+            public Assignments(String nameAss, String dayOfWeekAss, String timeAss, String courseNameAss) {
+                this.nameAss = nameAss;
+                this.dayOfWeekAss = dayOfWeekAss;
+                this.timeAss = timeAss;
+                this.courseNameAss = courseNameAss;
+            }
+
+            // Getters and setters
+            public void setNameAss(String nameAss) {
+                this.nameAss = nameAss;
+            }
+
+            // Updated to accommodate dayOfWeek and time
+            public void setDayOfWeekAss(String dayOfWeekAss) {
+                this.dayOfWeekAss = dayOfWeekAss;
+            }
+
+            public void setTimeAss(String timeAss) {
+                this.timeAss = timeAss;
+            }
+
+            public void setCourseNameAss(String courseNameAss) {
+                this.courseNameAss = courseNameAss;
+            }
+
+            public String getNameAss() {
+                return nameAss;
+            }
+
+            // Getter for dayOfWeek
+            public String getDayOfWeekAss() {
+                return dayOfWeekAss;
+            }
+
+            // Getter for time
+            public String getTimeAss() {
+                return timeAss;
+            }
+
+            public String getCourseNameAss() {
+                return courseNameAss;
+            }
+        }
+
+
+    private class Exams {
+        private String nameExam;
+        private String dayOfWeekExam; // To store the day of the week
+        private String timeExam; // To store the time
+        private String classExam;
 
         // Updated constructor to include dayOfWeek and time
-        public Course(String name, String dayOfWeek, String time, String instructor) {
-            this.name = name;
-            this.dayOfWeek = dayOfWeek;
-            this.time = time;
-            this.instructor = instructor;
+        public Exams(String nameExam, String dayOfWeekExam, String timeExam, String classExam) {
+            this.nameExam = nameExam;
+            this.dayOfWeekExam = dayOfWeekExam;
+            this.timeExam = timeExam;
+            this.classExam = classExam;
         }
 
         // Getters and setters
-        public void setName(String name) { this.name = name; }
+        public void setNameExam(String nameExam) { this.nameExam = nameExam; }
         // Updated to accommodate dayOfWeek and time
-        public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = dayOfWeek; }
-        public void setTime(String time) { this.time = time; }
-        public void setInstructor(String instructor) { this.instructor = instructor; }
-        public String getName() { return name; }
+        public void setDayOfWeekExam(String dayOfWeekExam) { this.dayOfWeekExam = dayOfWeekExam; }
+        public void setTimeExam(String timeExam) { this.timeExam = timeExam; }
+        public void setClassExam(String classExam) { this.classExam = classExam; }
+        public String getNameExam() { return nameExam; }
         // Getter for dayOfWeek
-        public String getDayOfWeek() { return dayOfWeek; }
+        public String getDayOfWeekExam() { return dayOfWeekExam; }
         // Getter for time
-        public String getTime() { return time; }
-        public String getInstructor() { return instructor; }
+        public String getTimeExam() { return timeExam; }
+        public String getClassExam() { return classExam; }
     }
 
 
