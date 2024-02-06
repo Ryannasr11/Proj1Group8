@@ -3,15 +3,12 @@ package com.example.project1group8.ui.home;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.project1group8.R;
 import com.example.project1group8.databinding.FragmentSlideshowBinding;
 import android.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
 
 
 import java.text.SimpleDateFormat;
@@ -38,9 +32,6 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
-    private EditText courseNumberInput;
-    private EditText timeInput;
-    private EditText courseNameInput;
     private Button addButton;
     private Button editButton;
     private Button deleteButton;
@@ -51,8 +42,6 @@ public class HomeFragment extends Fragment {
     // ------------------------------------------------------ //
 
     // Initial setup below; DO NOT EDIT BELOW!!!
-
-    // A list to store the course information at runtime
     private final List<Course> courses = new ArrayList<Course>();
     private final List<Assignments> assignments = new ArrayList<Assignments>();
     private final List<Exams> exams = new ArrayList<Exams>();
@@ -60,7 +49,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        // ... (existing code)
         HomeViewModel galleryViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
@@ -75,7 +63,6 @@ public class HomeFragment extends Fragment {
         editButton = binding.editButton; // The ID should match the one in your XML layout
         deleteButton = binding.deleteButton; // The ID should match the one in your XML layout
 
-        // Set onClickListener for Add button
         addButton.setOnClickListener(v -> {
             viewOptionsAdd();
         });
@@ -176,7 +163,6 @@ public class HomeFragment extends Fragment {
                             addTodo();
                             break;
                         default:
-                            // Handle unexpected value (if necessary)
                             break;
                     }
                 });
@@ -270,7 +256,6 @@ public class HomeFragment extends Fragment {
         final EditText editTextInstructor = dialogView.findViewById(R.id.editTextInstructor);
 
         editTextTime.setOnClickListener(v -> {
-            // Initialize a new instance of TimePickerDialog
             Calendar mcurrentTime = Calendar.getInstance();
             int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
             int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -279,7 +264,7 @@ public class HomeFragment extends Fragment {
             mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                 editTextTime.setText(time);
-            }, hour, minute, true); // True for 24-hour time
+            }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
@@ -290,10 +275,8 @@ public class HomeFragment extends Fragment {
                     String courseName = editTextCourseName.getText().toString();
                     String instructor = editTextInstructor.getText().toString();
 
-                    // Assuming spinnerDayOfWeek and editTextTime are initialized similarly in addCourse method
                     String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
                     String time = editTextTime.getText().toString();
-                    // Combine day and time into a single string or adjust based on your preference
                     String courseDateTime = dayOfWeek + " at " + time;
 
                     // Add course information to the list with the combined date and time
@@ -359,14 +342,12 @@ public class HomeFragment extends Fragment {
         // Pre-fill dialog with course data
         editTextCourseName.setText(courseToEdit.getName());
         editTextInstructor.setText(courseToEdit.getInstructor());
-        // Assuming the Course class has a getTime() method returning a String in "HH:mm" format
         editTextTime.setText(courseToEdit.getTime());
 
 
         builder.setView(dialogView)
                 .setTitle("Edit Course")
                 .setPositiveButton("Submit", (dialog, id) -> {
-                    // Assuming courseToEdit references the correct Course object you want to update
                     String courseName = editTextCourseName.getText().toString();
                     String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
                     String time = editTextTime.getText().toString();
@@ -374,8 +355,8 @@ public class HomeFragment extends Fragment {
 
                     // Update the properties of courseToEdit
                     courseToEdit.setName(courseName);
-                    courseToEdit.setDayOfWeek(dayOfWeek); // Ensure your Course class has this setter
-                    courseToEdit.setTime(time); // Ensure your Course class has this setter
+                    courseToEdit.setDayOfWeek(dayOfWeek);
+                    courseToEdit.setTime(time);
                     courseToEdit.setInstructor(instructor);
 
                     Toast.makeText(getContext(), "Course updated", Toast.LENGTH_SHORT).show();
@@ -428,7 +409,7 @@ public class HomeFragment extends Fragment {
         final EditText editTextAssignmentName = dialogView.findViewById(R.id.editTextAssignmentNameAss);
         final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekAss);
         final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeAss);
-        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss); // Now represents course name
+        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss);
 
         editTextTime.setOnClickListener(v -> {
             Calendar mcurrentTime = Calendar.getInstance();
@@ -493,7 +474,7 @@ public class HomeFragment extends Fragment {
         final EditText editTextAssignmentName = dialogView.findViewById(R.id.editTextAssignmentNameAss);
         final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekAss);
         final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeAss);
-        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss); // Used for course name in assignments
+        final EditText editTextCourseName = dialogView.findViewById(R.id.editTextCourseNameAss);
 
         editTextTime.setOnClickListener(v -> {
             // Initialize a new instance of TimePickerDialog
@@ -504,7 +485,7 @@ public class HomeFragment extends Fragment {
             TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                 editTextTime.setText(time);
-            }, hour, minute, true); // True for 24-hour time
+            }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
@@ -574,10 +555,10 @@ public class HomeFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.usoneexams, null);
 
-        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams); // Update ID for exam
-        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams); // Update ID for exam if necessary
-        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams); // Update ID for exam if necessary
-        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams); // Update ID for exam if necessary
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams);
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams);
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams);
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams);
 
         editTextTimeExam.setOnClickListener(v -> {
             // Initialize a new instance of TimePickerDialog
@@ -589,7 +570,7 @@ public class HomeFragment extends Fragment {
             mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                 editTextTimeExam.setText(time);
-            }, hour, minute, true); // True for 24-hour time
+            }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
@@ -639,12 +620,12 @@ public class HomeFragment extends Fragment {
     private void showEditDialogExam(final Exams examToEdit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.usoneexams, null); // Make sure this layout has the appropriate IDs for exams
+        View dialogView = inflater.inflate(R.layout.usoneexams, null);
 
-        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams); // Update ID for exam
-        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams); // Update ID for exam if necessary
-        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams); // Update ID for exam if necessary
-        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams); // Update ID for exam if necessary
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameExams);
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekExams);
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeExams);
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameExams);
 
         editTextTimeExam.setOnClickListener(v -> {
             // Initialize a new instance of TimePickerDialog
@@ -664,9 +645,6 @@ public class HomeFragment extends Fragment {
         editTextNameExam.setText(examToEdit.getNameExam());
         editTextTimeExam.setText(examToEdit.getTimeExam());
         editTextClassExam.setText(examToEdit.getClassExam());
-
-        // Assuming your spinnerDayOfWeekExam is properly initialized elsewhere with day names
-        // You may need to set the spinner to show the correct day of the week
 
         builder.setView(dialogView)
                 .setTitle("Edit Exam")
@@ -713,242 +691,13 @@ public class HomeFragment extends Fragment {
         selectionDialog.show();
     }
 
+    // Exam buttons above
 
+    // ------------------------------------------------------ //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // To do list buttons below
 
     private final List<ToDoItem> toDoItem = new ArrayList<>();
-
-//    private void addToDoList() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        LayoutInflater inflater = requireActivity().getLayoutInflater();
-//        View dialogView = inflater.inflate(R.layout.usonetodo, null);
-//
-//        final EditText editTextListName = dialogView.findViewById(R.id.editTextListNameTodo);
-//        final EditText editTextItemName = dialogView.findViewById(R.id.editTextItemNameTodo);
-//        final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekTodo);
-//        final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeTodo);
-//        Button buttonAddItem = dialogView.findViewById(R.id.buttonAddItem); // The button to add new to-do items
-//        LinearLayout container = dialogView.findViewById(R.id.linearLayoutToDoItems); // Container for to-do items
-//
-//        // Set up the button click listener
-//        buttonAddItem.setOnClickListener(v -> {
-//            // Inflate the to-do item layout and add it to the container
-//            View itemLayout = inflater.inflate(R.layout.fragment_gallery, container, false); // Inflate the item layout
-//            container.addView(itemLayout); // Add the item view to the container
-//        });
-//
-//
-//        // Configure the TimePickerDialog
-//        editTextTime.setOnClickListener(v -> {
-//            Calendar mcurrentTime = Calendar.getInstance();
-//            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-//            int minute = mcurrentTime.get(Calendar.MINUTE);
-//
-//            TimePickerDialog mTimePicker;
-//            mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
-//                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
-//                editTextTime.setText(time);
-//            }, hour, minute, true); // True for 24-hour time
-//            mTimePicker.setTitle("Select Time");
-//            mTimePicker.show();
-//        });
-//
-//        builder.setView(dialogView)
-//                .setTitle("Add To-Do List")
-//                .setPositiveButton("Submit", (dialog, id) -> {
-//                    String listName = editTextListName.getText().toString();
-//                    String itemName = editTextItemName.getText().toString();
-//                    String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
-//                    String time = editTextTime.getText().toString();
-//
-//                    // Check if the list name is empty
-//                    if (TextUtils.isEmpty(listName)) {
-//                        Toast.makeText(getContext(), "List name cannot be empty", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    // Find if the list already exists
-//                    ToDoList existingList = null;
-//                    for (ToDoList list : toDoLists) {
-//                        if (list.getListNameTodo().equals(listName)) {
-//                            existingList = list;
-//                            break;
-//                        }
-//                    }
-//
-//                    if (existingList == null) {
-//                        // If the list does not exist, create a new one
-//                        ToDoList newToDoList = new ToDoList(listName);
-//                        toDoLists.add(newToDoList);
-//                        existingList = newToDoList;
-//                    }
-//
-//                    // Add the new item to the list
-//                    if (!TextUtils.isEmpty(itemName)) {
-//                        ToDoItem newItem = new ToDoItem(itemName, dayOfWeek, time);
-//                        existingList.addItemTodo(newItem);
-//                    }
-//
-//                    Toast.makeText(getContext(), "To-Do List updated", Toast
-//                            .LENGTH_SHORT).show();
-//                })
-//                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//
-//    }
-//
-//    private void editToDoList() {
-//        // Get the list of to-do list names
-//        String[] toDoListNames = new String[toDoLists.size()];
-//        for (int i = 0; i < toDoLists.size(); i++) {
-//            toDoListNames[i] = toDoLists.get(i).getListNameTodo();
-//        }
-//
-//        // Show a dialog to pick a list to edit
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        builder.setTitle("Choose a To-Do List to edit")
-//                .setItems(toDoListNames, (dialog, which) -> {
-//                    // Pass the selected ToDoList to the add/edit method
-//                    editSelectedToDoList(toDoLists.get(which));
-//                });
-//
-//        AlertDialog selectionDialog = builder.create();
-//        selectionDialog.show();
-//    }
-//
-//    private void editSelectedToDoList(ToDoList selectedToDoList) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        LayoutInflater inflater = requireActivity().getLayoutInflater();
-//        View dialogView = inflater.inflate(R.layout.usonetodo, null);
-//
-//        final EditText editTextListName = dialogView.findViewById(R.id.editTextListNameTodo);
-//        final EditText editTextItemName = dialogView.findViewById(R.id.editTextItemNameTodo);
-//        final Spinner spinnerDayOfWeek = dialogView.findViewById(R.id.spinnerDayOfWeekTodo);
-//        final EditText editTextTime = dialogView.findViewById(R.id.editTextTimeTodo);
-//        Button buttonAddItem = dialogView.findViewById(R.id.buttonAddItem);
-//        LinearLayout container = dialogView.findViewById(R.id.linearLayoutToDoItems);
-//
-//        // Populate the dialog fields with the selectedToDoList data
-//        editTextListName.setText(selectedToDoList.getListNameTodo());
-//
-//        // Set up the button click listener to add new items to the list
-//        buttonAddItem.setOnClickListener(v -> {
-//            String itemName = editTextItemName.getText().toString();
-//            String dayOfWeek = spinnerDayOfWeek.getSelectedItem().toString();
-//            String time = editTextTime.getText().toString();
-//
-//            if (!TextUtils.isEmpty(itemName)) {
-//                ToDoItem newItem = new ToDoItem(itemName, dayOfWeek, time);
-//                selectedToDoList.addItemTodo(newItem);
-//
-//                // Create a view to display the added item
-//                View itemLayout = inflater.inflate(R.layout.fragment_gallery, container, false);
-//                TextView itemNameTextView = itemLayout.findViewById(R.id.editTextItemNameTodo);
-//                TextView dayOfWeekTextView = itemLayout.findViewById(R.id.spinnerDayOfWeekTodo);
-//                TextView timeTextView = itemLayout.findViewById(R.id.editTextTimeTodo);
-//
-//                itemNameTextView.setText(itemName);
-//                dayOfWeekTextView.setText(dayOfWeek);
-//                timeTextView.setText(time);
-//
-//                container.addView(itemLayout); // Add the item view to the container
-//
-//                // Clear input fields
-//                editTextItemName.getText().clear();
-//                editTextTime.getText().clear();
-//            }
-//        });
-//
-//        // Configure the TimePickerDialog
-//        editTextTime.setOnClickListener(v -> {
-//            Calendar mcurrentTime = Calendar.getInstance();
-//            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-//            int minute = mcurrentTime.get(Calendar.MINUTE);
-//
-//            TimePickerDialog mTimePicker;
-//            mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
-//                String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
-//                editTextTime.setText(time);
-//            }, hour, minute, true); // True for 24-hour time
-//            mTimePicker.setTitle("Select Time");
-//            mTimePicker.show();
-//        });
-//
-//        builder.setView(dialogView)
-//                .setTitle("Edit To-Do List")
-//                .setPositiveButton("Save", (dialog, id) -> {
-//                    String updatedListName = editTextListName.getText().toString();
-//
-//                    // Check if the updated list name is empty
-//                    if (TextUtils.isEmpty(updatedListName)) {
-//                        Toast.makeText(getContext(), "List name cannot be empty", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    // Update the list name
-//                    selectedToDoList.setListNameTodo(updatedListName);
-//
-//                    Toast.makeText(getContext(), "To-Do List updated", Toast.LENGTH_SHORT).show();
-//                })
-//                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
-//
-//
-//    // Overloaded addToDoList for editing existing lists
-//    // In your dialog layout XML, define a LinearLayout with the ID `linearLayoutToDoItems`
-//
-//    // Overloaded addToDoList for editing existing lists
-//    // Overloaded addToDoList for editing existing lists
-//
-//
-//
-//
-//
-//
-//    private void deleteToDoList() {
-//        String[] toDoListNames = new String[toDoLists.size()];
-//        for (int i = 0; i < toDoLists.size(); i++) {
-//            toDoListNames[i] = toDoLists.get(i).getListNameTodo();
-//        }
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        builder.setTitle("Choose a To-Do List to delete")
-//                .setItems(toDoListNames, (dialog, which) -> {
-//                    toDoLists.remove(which);
-//                    Toast.makeText(getContext(), "To-Do List deleted", Toast.LENGTH_SHORT).show();
-//                });
-//
-//        AlertDialog selectionDialog = builder.create();
-//        selectionDialog.show();
-//    }
 
 
     private void addTodo() {
@@ -956,10 +705,10 @@ public class HomeFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.usonetodo, null);
 
-        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameTodo); // Update ID for exam
-        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekTodo); // Update ID for exam if necessary
-        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeTodo); // Update ID for exam if necessary
-        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameTodo); // Update ID for exam if necessary
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameTodo);
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekTodo);
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeTodo);
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameTodo);
 
         editTextTimeExam.setOnClickListener(v -> {
             // Initialize a new instance of TimePickerDialog
@@ -971,7 +720,7 @@ public class HomeFragment extends Fragment {
             mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                 editTextTimeExam.setText(time);
-            }, hour, minute, true); // True for 24-hour time
+            }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
@@ -1021,12 +770,12 @@ public class HomeFragment extends Fragment {
     private void showEditDialogTodo(final ToDoItem examToEdit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.usonetodo, null); // Make sure this layout has the appropriate IDs for exams
+        View dialogView = inflater.inflate(R.layout.usonetodo, null);
 
-        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameTodo); // Update ID for exam
-        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekTodo); // Update ID for exam if necessary
-        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeTodo); // Update ID for exam if necessary
-        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameTodo); // Update ID for exam if necessary
+        final EditText editTextNameExam = dialogView.findViewById(R.id.editTextAssignmentNameTodo);
+        final Spinner spinnerDayOfWeekExam = dialogView.findViewById(R.id.spinnerDayOfWeekTodo);
+        final EditText editTextTimeExam = dialogView.findViewById(R.id.editTextTimeTodo);
+        final EditText editTextClassExam = dialogView.findViewById(R.id.editTextCourseNameTodo);
 
         editTextTimeExam.setOnClickListener(v -> {
             // Initialize a new instance of TimePickerDialog
@@ -1037,18 +786,15 @@ public class HomeFragment extends Fragment {
             TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                 editTextTimeExam.setText(time);
-            }, hour, minute, true); // True for 24-hour time
+            }, hour, minute, true);
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
 
-        // Pre-fill dialog with exam data
+        // Pre-fill dialog with to do list data
         editTextNameExam.setText(examToEdit.getNameTodo());
         editTextTimeExam.setText(examToEdit.getTimeTodo());
         editTextClassExam.setText(examToEdit.getThingTodo());
-
-        // Assuming your spinnerDayOfWeekExam is properly initialized elsewhere with day names
-        // You may need to set the spinner to show the correct day of the week
 
         builder.setView(dialogView)
                 .setTitle("Edit To Do list")
@@ -1059,7 +805,7 @@ public class HomeFragment extends Fragment {
                     String timeExam = editTextTimeExam.getText().toString();
                     String classExam = editTextClassExam.getText().toString();
 
-                    // Updating the properties of examToEdit
+                    // Updating the properties
                     examToEdit.setNameTodo(nameExam);
                     examToEdit.setDayOfWeekTodo(dayOfWeekExam);
                     examToEdit.setTimeTodo(timeExam);
@@ -1096,10 +842,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-
-
-
-
     // All Buttons above
 
     // ------------------------------------------------------ //
@@ -1115,11 +857,10 @@ public class HomeFragment extends Fragment {
 
     private class Course {
         private String name;
-        private String dayOfWeek; // To store the day of the week
-        private String time; // To store the time
+        private String dayOfWeek;
+        private String time;
         private String instructor;
 
-        // Updated constructor to include dayOfWeek and time
         public Course(String name, String dayOfWeek, String time, String instructor) {
             this.name = name;
             this.dayOfWeek = dayOfWeek;
@@ -1132,7 +873,6 @@ public class HomeFragment extends Fragment {
             this.name = name;
         }
 
-        // Updated to accommodate dayOfWeek and time
         public void setDayOfWeek(String dayOfWeek) {
             this.dayOfWeek = dayOfWeek;
         }
@@ -1149,12 +889,10 @@ public class HomeFragment extends Fragment {
             return name;
         }
 
-        // Getter for dayOfWeek
         public String getDayOfWeek() {
             return dayOfWeek;
         }
 
-        // Getter for time
         public String getTime() {
             return time;
         }
@@ -1167,11 +905,10 @@ public class HomeFragment extends Fragment {
 
     private class Assignments {
         private String nameAss;
-        private String dayOfWeekAss; // To store the day of the week
-        private String timeAss; // To store the time
+        private String dayOfWeekAss;
+        private String timeAss;
         private String courseNameAss;
 
-        // Updated constructor to include dayOfWeek and time
         public Assignments(String nameAss, String dayOfWeekAss, String timeAss, String courseNameAss) {
             this.nameAss = nameAss;
             this.dayOfWeekAss = dayOfWeekAss;
@@ -1184,7 +921,6 @@ public class HomeFragment extends Fragment {
             this.nameAss = nameAss;
         }
 
-        // Updated to accommodate dayOfWeek and time
         public void setDayOfWeekAss(String dayOfWeekAss) {
             this.dayOfWeekAss = dayOfWeekAss;
         }
@@ -1201,12 +937,10 @@ public class HomeFragment extends Fragment {
             return nameAss;
         }
 
-        // Getter for dayOfWeek
         public String getDayOfWeekAss() {
             return dayOfWeekAss;
         }
 
-        // Getter for time
         public String getTimeAss() {
             return timeAss;
         }
@@ -1219,11 +953,10 @@ public class HomeFragment extends Fragment {
 
     private class Exams {
         private String nameExam;
-        private String dayOfWeekExam; // To store the day of the week
-        private String timeExam; // To store the time
+        private String dayOfWeekExam;
+        private String timeExam;
         private String classExam;
 
-        // Updated constructor to include dayOfWeek and time
         public Exams(String nameExam, String dayOfWeekExam, String timeExam, String classExam) {
             this.nameExam = nameExam;
             this.dayOfWeekExam = dayOfWeekExam;
@@ -1233,14 +966,11 @@ public class HomeFragment extends Fragment {
 
         // Getters and setters
         public void setNameExam(String nameExam) { this.nameExam = nameExam; }
-        // Updated to accommodate dayOfWeek and time
         public void setDayOfWeekExam(String dayOfWeekExam) { this.dayOfWeekExam = dayOfWeekExam; }
         public void setTimeExam(String timeExam) { this.timeExam = timeExam; }
         public void setClassExam(String classExam) { this.classExam = classExam; }
         public String getNameExam() { return nameExam; }
-        // Getter for dayOfWeek
         public String getDayOfWeekExam() { return dayOfWeekExam; }
-        // Getter for time
         public String getTimeExam() { return timeExam; }
         public String getClassExam() { return classExam; }
     }
@@ -1293,63 +1023,5 @@ public class HomeFragment extends Fragment {
             this.thingTodo = thingTodo;
         }
     }
-
-
-//    private class ToDoList {
-//        private String listNameTodo;
-//        private List<ToDoItem> itemsTodo;
-//
-//        public ToDoList(String listNameTodo) {
-//            this.listNameTodo = listNameTodo;
-//            this.itemsTodo = new ArrayList<>();
-//        }
-//
-//        // Method to add a ToDoItem
-//        public void addItemTodo(ToDoItem item) {
-//            itemsTodo.add(item);
-//        }
-//
-//        // Method to remove a ToDoItem
-//        public void removeItemTodo(ToDoItem item) {
-//            itemsTodo.remove(item);
-//        }
-//
-//        // Getters
-//        public String getListNameTodo() {
-//            return listNameTodo;
-//        }
-//
-//        public List<ToDoItem> getItemsTodo() {
-//            return new ArrayList<>(itemsTodo); // Returning a copy to protect the original list
-//        }
-//
-//        // Setters
-//        public void setListNameTodo(String listNameTodo) {
-//            this.listNameTodo = listNameTodo;
-//        }
-//
-//        // Additional methods
-//        // Method to get a ToDoItem by name
-//        public ToDoItem getItemByNameTodo(String nameTodo) {
-//            for (ToDoItem item : itemsTodo) {
-//                if (item.getNameTodo().equals(nameTodo)) {
-//                    return item;
-//                }
-//            }
-//            return null; // or throw an exception if preferred
-//        }
-//
-//        // Method to remove a ToDoItem by name
-//        public void removeItemByNameTodo(String nameTodo) {
-//            ToDoItem itemToRemove = getItemByNameTodo(nameTodo);
-//            if (itemToRemove != null) {
-//                itemsTodo.remove(itemToRemove);
-//            }
-//        }
-//    }
-
-
-
-
 
 }
