@@ -206,29 +206,32 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        if (activitiesForDay.size() != activityDate.size() && activityDate.size() != activityCourse.size()) {
-            return activitiesForDay;
+        if (false) {
+            if (activitiesForDay.size() != activityDate.size() && activityDate.size() != activityCourse.size()) {
+                return activitiesForDay;
+            }
+
+            // This assumes your time is in the format "HH:mm"
+            for (String s : activityDate) {
+                String[] parts = s.split(":");
+                int hour = Integer.parseInt(parts[0]);
+                int minute = Integer.parseInt(parts[1]);
+                numberTime.add((hour * 60) + minute);
+            }
+
+            for (String s : activityCourse) {
+                int i = Integer.parseInt(s.substring(s.length() - 4));
+                numberCourse.add(i);
+            }
         }
 
-        // This assumes your time is in the format "HH:mm"
-        for (String s : activityDate) {
-            String[] parts = s.split(":");
-            int hour = Integer.parseInt(parts[0]);
-            int minute = Integer.parseInt(parts[1]);
-            numberTime.add((hour * 60) + minute);
-        }
-
-        for (String s : activityCourse) {
-            int i = Integer.parseInt(s.substring(s.length() - 4));
-            numberCourse.add(i);
-        }
 
 
-        if (index == 1) {
+        if (index == 11) {
             quickSort(activitiesForDay, numberTime, 0, activitiesForDay.size() - 1);
 
             return activitiesForDay;
-        } else if (index == 2) {
+        } else if (index == 22) {
             quickSort(activitiesForDay, numberCourse, 0, activitiesForDay.size() - 1);
             return activitiesForDay;
         } else {
