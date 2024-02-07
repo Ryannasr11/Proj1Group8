@@ -22,4 +22,11 @@
         <item>Sunday</item>
     </string-array>
 
+
+    <string-array name="spinner_options">
+        <item>Unsorted</item>
+        <item>Sort by Time</item>
+        <item>Sort by Course</item>
+    </string-array>
+
 </resources>

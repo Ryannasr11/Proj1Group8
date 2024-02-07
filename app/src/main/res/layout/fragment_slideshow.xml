@@ -19,11 +19,21 @@
         android:id="@+id/classesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Classes"
+        android:text="Up Next:"
         app:layout_constraintTop_toBottomOf="@id/calendarView"
-        app:layout_constraintBottom_toTopOf="@id/add_button"
+        app:layout_constraintBottom_toTopOf="@id/my_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Spinner
+        android:id="@+id/my_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinner_options"
+        app:layout_constraintTop_toBottomOf="@id/my_spinner"
+        app:layout_constraintBottom_toTopOf="@id/add_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 
@@ -33,7 +43,7 @@ android:id="@+id/add_button"
 android:layout_width="0dp"
 android:layout_height="wrap_content"
 android:text="Add"
-    app:layout_constraintTop_toBottomOf="@id/classesTextView"
+    app:layout_constraintTop_toBottomOf="@id/my_spinner"
 app:layout_constraintStart_toStartOf="parent"
 app:layout_constraintEnd_toEndOf="parent"
 app:layout_constraintBottom_toTopOf="@id/edit_button"

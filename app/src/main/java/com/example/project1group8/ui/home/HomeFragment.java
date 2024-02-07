@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,6 +27,7 @@ import android.app.AlertDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -35,6 +39,8 @@ public class HomeFragment extends Fragment {
     private Button addButton;
     private Button editButton;
     private Button deleteButton;
+
+    public int index = 0;
 
 
     // Private variables above
@@ -54,6 +60,23 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        Spinner mySpinner = binding.mySpinner; // Make sure this ID matches your Spinner's ID in the XML
+        // If you haven't set the entries for the spinner in XML, you'd set the adapter for mySpinner here
+
+        // Set the listener for the Spinner
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Update the index based on the selected position
+                index = position; // The index variable should be a member variable of the Fragment
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                index = 0; // Reset the index or set it to a default value when nothing is selected
+            }
+        });
 
 
 
@@ -75,6 +98,8 @@ public class HomeFragment extends Fragment {
             viewOptionsDelete();
         });
 
+
+
         CalendarView calendarView = binding.calendarView;
         TextView classesTextView = binding.classesTextView; // Assuming you've added this to your binding class
 
@@ -85,7 +110,7 @@ public class HomeFragment extends Fragment {
             String selectedDate = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()).format(calendar.getTime());
 
             // Filter classes for this date
-            List<String> classesForDay = getClassesForDay(year, month, dayOfMonth);
+            List<String> classesForDay = getClassesForDay(year, month, dayOfMonth, index);
 
             // Update TextView or show a dialog
             classesTextView.setText(TextUtils.join("\n", classesForDay));
@@ -94,14 +119,59 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    public static void quickSort(List<String> stringList, List<Integer> integerList, int low, int high) {
+        if (low < high) {
+            int pi = partition(stringList, integerList, low, high);
+
+            quickSort(stringList, integerList, low, pi - 1);
+            quickSort(stringList, integerList, pi + 1, high);
+        }
+    }
+
+    private static int partition(List<String> stringList, List<Integer> integerList, int low, int high) {
+        String pivot = stringList.get(high);
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (stringList.get(j).compareTo(pivot) < 0) {
+                i++;
+
+                // Swap in stringList
+                String temp = stringList.get(i);
+                stringList.set(i, stringList.get(j));
+                stringList.set(j, temp);
+
+                // Perform the same swap in integerList
+                Integer tempInt = integerList.get(i);
+                integerList.set(i, integerList.get(j));
+                integerList.set(j, tempInt);
+            }
+        }
+
+        // Swap the pivot element to its correct position
+        String temp = stringList.get(i + 1);
+        stringList.set(i + 1, stringList.get(high));
+        stringList.set(high, temp);
+
+        // And again, do the same swap in integerList
+        Integer tempInt = integerList.get(i + 1);
+        integerList.set(i + 1, integerList.get(high));
+        integerList.set(high, tempInt);
+
+        return i + 1;
+    }
+
     // Initial setup above; DO NOT EDIT ABOVE!!!
 
     // ------------------------------------------------------ //
 
     // Calendar functionality below
 
-    private List<String> getClassesForDay(int year, int month, int dayOfMonth) {
+    private List<String> getClassesForDay(int year, int month, int dayOfMonth, int index) {
         List<String> activitiesForDay = new ArrayList<>();
+        List<String> activityDate = new ArrayList<>();
+        List<String> activityCourse = new ArrayList<>();
+        ArrayList<Integer> numberTime = new ArrayList<>();
+        ArrayList<Integer> numberCourse = new ArrayList<>();
 
         // Create a Calendar object for the selected date
         Calendar calendar = Calendar.getInstance();
@@ -114,6 +184,8 @@ public class HomeFragment extends Fragment {
         for (Course course : courses) {
             if (course.getDayOfWeek().equalsIgnoreCase(dayOfWeekSelected)) {
                 activitiesForDay.add("Course: " + course.getName() + " at " + course.getTime());
+                activityDate.add(course.getTime());
+                activityCourse.add(course.getName());
             }
         }
 
@@ -121,16 +193,47 @@ public class HomeFragment extends Fragment {
         for (Assignments assignment : assignments) {
             if (assignment.getDayOfWeekAss().equalsIgnoreCase(dayOfWeekSelected)) {
                 activitiesForDay.add("Assignment: " + assignment.getNameAss() + " for " + assignment.getCourseNameAss() + " at " + assignment.getTimeAss());
+                activityDate.add(assignment.getTimeAss());
+                activityCourse.add(assignment.getCourseNameAss());
             }
         }
 
         for (Exams exam : exams) {
             if (exam.getDayOfWeekExam().equalsIgnoreCase(dayOfWeekSelected)) {
                 activitiesForDay.add("Exam: " + exam.getNameExam() + " in " + exam.getClassExam() + " at " + exam.getTimeExam());
+                activityDate.add(exam.getTimeExam());
+                activityCourse.add(exam.getClassExam());
             }
         }
 
-        return activitiesForDay;
+        if (activitiesForDay.size() != activityDate.size() && activityDate.size() != activityCourse.size()) {
+            return activitiesForDay;
+        }
+
+        // This assumes your time is in the format "HH:mm"
+        for (String s : activityDate) {
+            String[] parts = s.split(":");
+            int hour = Integer.parseInt(parts[0]);
+            int minute = Integer.parseInt(parts[1]);
+            numberTime.add((hour * 60) + minute);
+        }
+
+        for (String s : activityCourse) {
+            int i = Integer.parseInt(s.substring(s.length() - 4));
+            numberCourse.add(i);
+        }
+
+
+        if (index == 1) {
+            quickSort(activitiesForDay, numberTime, 0, activitiesForDay.size() - 1);
+
+            return activitiesForDay;
+        } else if (index == 2) {
+            quickSort(activitiesForDay, numberCourse, 0, activitiesForDay.size() - 1);
+            return activitiesForDay;
+        } else {
+            return activitiesForDay;
+        }
     }
 
 
